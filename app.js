@@ -37,6 +37,24 @@
     c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
   });
 
+  // touch phones: light up the card or row in the middle of the screen
+  if(window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window){
+    var lo=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('lit',e.isIntersecting)})},{rootMargin:'-38% 0px -38% 0px'});
+    $$('.card,.row').forEach(function(el){lo.observe(el)});
+    $$('.card').forEach(function(c){
+      c.addEventListener('pointerdown',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
+    });
+  }
+
+  // hero emblem drifts slowly as you scroll (all devices)
+  var em=$('.emblem'), still=window.matchMedia('(prefers-reduced-motion: reduce)').matches, tick=false;
+  if(em && !still){
+    window.addEventListener('scroll',function(){
+      if(tick) return; tick=true;
+      requestAnimationFrame(function(){var y=Math.min(window.scrollY,700);em.style.transform='translateY('+(y*0.1)+'px)';tick=false});
+    },{passive:true});
+  }
+
   // duplicate marquee for seamless loop
   var tr=$('#track'); if(tr) tr.innerHTML+=tr.innerHTML;
 
