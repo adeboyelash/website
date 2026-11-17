@@ -55,6 +55,17 @@
     },{passive:true});
   }
 
+  // diagnostic: open the site with ?motion=check to see why effects may be off
+  if(/[?&]motion=check/.test(location.search)){
+    var box=document.createElement('div');
+    box.style.cssText='position:fixed;left:10px;right:10px;bottom:84px;z-index:999;background:#fff;color:#111;font:14px/1.5 sans-serif;padding:12px 14px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+    var upd=function(){
+      var n=document.getAnimations?document.getAnimations().filter(function(a){return a.playState==='running'}).length:'n/a';
+      box.innerHTML='<b>Motion check</b><br>Script running: yes<br>Phone says reduce motion: <b>'+(window.matchMedia('(prefers-reduced-motion: reduce)').matches?'YES (effects limited)':'no')+'</b><br>Touch screen: '+(window.matchMedia('(hover: none)').matches?'yes':'no')+'<br>Animations running now: <b>'+n+'</b><br>Scroll offset on logo: '+(em?em.style.transform||'none':'n/a');
+    };
+    document.body.appendChild(box); upd(); setInterval(upd,1000);
+  }
+
   // duplicate marquee for seamless loop
   var tr=$('#track'); if(tr) tr.innerHTML+=tr.innerHTML;
 
